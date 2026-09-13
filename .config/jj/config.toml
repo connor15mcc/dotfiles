@@ -3,20 +3,7 @@ name = "Connor McCarthy"
 email = "connor15mcc@gmail.com"
 
 [ui]
-default-command = [
-  "log",
-  "--template=builtin_log_compact",
-  # show only up-to-date changes.
-  # this facilitates dropping work from actively tracked (megamerge),
-  # while balancing log noise and avoiding the desire to abandon entirely
-  "--revisions=fork_point(active_megamerge(@)-)::@ | ancestors(trunk(), 2) | ancestors(@, 2) | @::",
-  #            include all commits in the
-  #            megamerge
-  #                                                  include recent changes
-  #                                                  on trunk for bearings
-  #                                                                          always include head
-  #                                                                                            include children of active
-]
+default-command = ["log", "--template=builtin_log_compact"]
 pager = "delta"
 diff-formatter = ":git"
 editor = "nvim"
@@ -172,6 +159,22 @@ definition = ["rebase", "--destination", "trunk()", "--simplify-parents"]
 
 [revsets]
 bookmark-advance-to = 'closest_pushable(@)'
+# show only up-to-date changes.
+# this facilitates dropping work from actively tracked (megamerge),
+# while balancing log noise and avoiding the desire to abandon entirely
+#
+# every branch between the fork point and the megamerge
+# | the megamerge and everything above it
+# | recent changes on trunk, for bearings
+# | always the head
+# | children of the head
+log = '''
+  fork_point(active_megamerge(@)-)::active_megamerge(@)
+  | active_megamerge(@)::
+  | ancestors(trunk(), 2)
+  | ancestors(@, 2)
+  | @::
+'''
 
 [revset-aliases]
 '/' = 'trunk()'
@@ -180,7 +183,13 @@ bookmark-advance-to = 'closest_pushable(@)'
 
 'closest_bookmark(to)' = 'heads(::to & bookmarks())'
 'closest_pushable(to)' = 'heads(::to & mutable() & ~description(exact:"") & (~empty() | merges()))'
-"active_megamerge(to)" = "heads(::to & merges() & (trunk()..))"
+# the second arm keeps the megamerge visible when `to` is off the stack
+"active_megamerge(to)" = '''
+  coalesce(
+    heads(::to & merges() & (trunk()..)),
+    heads(mine() & merges() & (trunk()..)),
+  )
+'''
 "branch_start(to)" = "heads(::to & trunk())+ & ::to"
 
 
