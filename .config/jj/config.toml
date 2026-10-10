@@ -163,16 +163,20 @@ bookmark-advance-to = 'closest_pushable(@)'
 # this facilitates dropping work from actively tracked (megamerge),
 # while balancing log noise and avoiding the desire to abandon entirely
 #
-# every branch between the fork point and the megamerge
-# | the megamerge and everything above it
+# the megamerge and everything above it
+# | every change under the megamerge
+# | the commit that the stack sits on, for bearings
+# | the commit that the head sits on, so that the graph reaches trunk
 # | recent changes on trunk, for bearings
-# | always the head
+# | the whole branch that the head sits on, even without a megamerge
 # | children of the head
 log = '''
-  fork_point(active_megamerge(@)-)::active_megamerge(@)
-  | active_megamerge(@)::
+  active_megamerge(@)::
+  | trunk()..active_megamerge(@)
+  | roots(trunk()..active_megamerge(@))-
+  | roots(trunk()..@)-
   | ancestors(trunk(), 2)
-  | ancestors(@, 2)
+  | trunk()..@
   | @::
 '''
 
