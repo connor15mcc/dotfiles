@@ -12,8 +12,8 @@ YELLOW='\033[1;33m'
 NC='\033[0m'
 
 # Configuration
-DOTFILES_REPO_HTTPS="https://github.com/connor15mcc/.dotfiles.git"
-DOTFILES_REPO_SSH="git@github.com:connor15mcc/.dotfiles.git"
+DOTFILES_REPO_HTTPS="https://github.com/connor15mcc/dotfiles.git"
+DOTFILES_REPO_SSH="git@github.com:connor15mcc/dotfiles.git"
 DOTFILES_DIR="$HOME/.dotfiles"
 
 # Parse arguments
