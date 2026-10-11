@@ -216,7 +216,7 @@ default_commit_description = '''
 "format_timestamp(timestamp)" = "timestamp.ago()"
 
 [git]
-private-commits = "description(glob:'private:*')"
+private-commits = "description(glob:'private:*') | description(glob:'wip:*') | description(glob:'plan:*')"
 
 [fix.tools.rustfmt]
 command = ["rustfmt", "+nightly", "--edition", "2024"]
