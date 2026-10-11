@@ -199,6 +199,8 @@ log = '''
   )
 '''
 "branch_start(to)" = "heads(::to & trunk())+ & ::to"
+# https://github.com/jj-vcs/jj/discussions/5669
+'why_immutable(r)' = '(r & immutable()) | roots(r:: & immutable_heads())'
 
 
 [template-aliases]
