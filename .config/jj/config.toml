@@ -139,23 +139,39 @@ definition = [
 ]
 
 [aliases.stage]
-doc = "Stack all non-empty changes after the active megamerge"
+doc = "Stage my non-empty changes after the active megamerge, or above trunk"
 definition = [
   "util",
   "exec",
   "--",
   "jj-stack",
   "-r",
-  "active_megamerge(@)+:: ~ empty()",
+  '''
+  coalesce(
+    heads(::@ & merges() & mutable() & (trunk()..) & description(regex:"^megamerge\n?$")),
+    trunk(),
+  )+:: & mine() & mutable() ~ empty()
+  ''',
 ]
 
 [aliases.stack]
 doc = "Insert a revision as a new branch under the active megamerge"
 definition = ["util", "exec", "--", "jj-stack", "-r"]
 
+[aliases.land]
+doc = "Land a staged branch and advance the local trunk bookmark"
+definition = ["util", "exec", "--", "jj-land", "-r"]
+
 [aliases.restack]
 doc = "Rebase megamerge changes onto trunk"
-definition = ["rebase", "--destination", "trunk()", "--simplify-parents"]
+definition = [
+  "rebase",
+  "--onto",
+  "trunk()",
+  "--source",
+  "roots(trunk()..) & mutable()",
+  "--simplify-parents",
+]
 
 [revsets]
 bookmark-advance-to = 'closest_pushable(@)'
