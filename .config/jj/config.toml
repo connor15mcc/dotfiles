@@ -169,7 +169,7 @@ definition = [
   "--onto",
   "trunk()",
   "--source",
-  "roots(trunk()..) & mutable()",
+  "roots(trunk()..@) & mutable()",
   "--simplify-parents",
 ]
 
