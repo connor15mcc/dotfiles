@@ -26,6 +26,9 @@ if not pgrep ssh-agent | string collect >/dev/null
   set -Ux SSH_AUTH_SOCK $SSH_AUTH_SOCK
 end
 
+set -gx ZELLIJ_SOCKET_DIR $HOME/.local/state/zellij
+mkdir -p $ZELLIJ_SOCKET_DIR
+
 set -g mise_fish_mode eval_after_arrow
 mise activate fish | source
 atuin init fish | source
