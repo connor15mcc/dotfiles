@@ -13,10 +13,6 @@ ACTION:
    `git checkout`, `git add`, and `git stash`.
 2. Make every change in the working-copy change `@`. Edit the files. `jj`
    records the edits in `@` automatically.
-   - If a megamerge exists, work in a change above the megamerge. Never work in
-     the megamerge change itself.
-   - If `@` is the megamerge change, run `jj new` to create a change above it.
-     Do not ask the user first.
 3. Run only read-only `jj` commands, for example `jj log`, `jj diff`, `jj show`,
    `jj status`, and `jj op log`.
 4. Before a command that changes history or bookmarks, ask the user. Examples:
@@ -29,6 +25,14 @@ ACTION:
      calls code that A adds, or the test in B needs a helper from A.
    - If changes are independent, make them siblings. Join them with a merge
      change.
+6. Keep an empty, undescribed change at the top of the stack. Make it the
+   working-copy change `@`.
+   - After you finish a change, run `jj new` to create the empty change above
+     it. Do not ask the user first.
+   - If `@` is a described change, run `jj new` before you edit files. Do not
+     ask the user first.
+   - Never work in the megamerge change itself.
+   - Never leave `@` on a described change when you stop work.
 
 SKIP: The user explicitly names the command or the target change.
 
