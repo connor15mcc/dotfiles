@@ -207,11 +207,12 @@ log = '''
 
 'closest_bookmark(to)' = 'heads(::to & bookmarks())'
 'closest_pushable(to)' = 'heads(::to & mutable() & ~description(exact:"") & (~empty() | merges()))'
-# the second arm keeps the megamerge visible when `to` is off the stack
+# `mine()` instead of `mutable()` keeps `revsets.log` fast.
+'megamerge()' = 'trunk().. & mine() & description(regex:"^megamerge\\s*$")'
 "active_megamerge(to)" = '''
   coalesce(
-    heads(::to & merges() & (trunk()..)),
-    heads(mine() & merges() & (trunk()..)),
+    heads(megamerge() & (::to | to::)),
+    latest(megamerge(), 1),
   )
 '''
 "branch_start(to)" = "heads(::to & trunk())+ & ::to"
