@@ -1,0 +1,13 @@
+--when.repositories = [
+  "~/dev/example-monorepo",
+]
+
+[remotes.origin]
+fetch-bookmarks = "master | main | glob:'connor15mcc/*'"
+fetch-tags = "glob:'*' ~ glob:'*'"
+
+[fsmonitor]
+backend = "watchman"
+
+[fsmonitor.watchman]
+register-snapshot-trigger = true
