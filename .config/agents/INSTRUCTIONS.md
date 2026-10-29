@@ -18,6 +18,7 @@ ACTION:
 4. Before a command that changes history or bookmarks, ask the user. Examples:
    `jj new`, `jj describe`, `jj squash`, `jj rebase`, `jj abandon`,
    `jj bookmark set`, `jj git push`.
+   - Prefix every description that you write with `wip: `.
 5. If the user asks for separate, stacked, or merged changes, put each
    dependency in the jj graph. Never leave dependent changes as siblings and
    describe the dependency in text.
