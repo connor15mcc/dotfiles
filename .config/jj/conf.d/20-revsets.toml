@@ -1,0 +1,46 @@
+[revsets]
+bookmark-advance-to = 'closest_pushable(@)'
+short-prefixes = "(trunk()..@ | trunk()..active_megamerge(@))::"
+# show only up-to-date changes.
+# this facilitates dropping work from actively tracked (megamerge),
+# while balancing log noise and avoiding the desire to abandon entirely
+#
+# the megamerge and everything above it
+# | every change under the megamerge
+# | the commit that the stack sits on, for bearings
+# | the commit that the head sits on, so that the graph reaches trunk
+# | recent changes on trunk, for bearings
+# | the whole branch that the head sits on, even without a megamerge
+# | children of the head
+log = '''
+  active_megamerge(@)::
+  | trunk()..active_megamerge(@)
+  | roots(trunk()..active_megamerge(@))-
+  | roots(trunk()..@)-
+  | ancestors(trunk(), 2)
+  | trunk()..@
+  | @::
+'''
+
+[revset-aliases]
+'/' = 'trunk()'
+# don't consider branches descendant from my changes to be immutable
+# (depend on my work at your own risk!)
+"immutable_heads()" = '''
+  (builtin_immutable_heads() | (trunk().. & ~mine()))
+  ~ (mine() & trunk()..)::
+'''
+
+'closest_bookmark(to)' = 'heads(::to & bookmarks())'
+'closest_pushable(to)' = 'heads(::to & mutable() & ~description(exact:"") & (~empty() | merges()))'
+# `mine()` instead of `mutable()` keeps `revsets.log` fast.
+'megamerge()' = 'trunk().. & mine() & description(regex:"^megamerge\\s*$")'
+"active_megamerge(to)" = '''
+  coalesce(
+    heads(megamerge() & (::to | to::)),
+    latest(megamerge(), 1),
+  )
+'''
+"branch_start(to)" = "heads(::to & trunk())+ & ::to"
+# https://github.com/jj-vcs/jj/discussions/5669
+'why_immutable(r)' = '(r & immutable()) | roots(r:: & immutable_heads())'

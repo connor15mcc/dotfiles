@@ -1,0 +1,111 @@
+[aliases.jj]
+doc = "Forward (accidentally) nested commands back to `jj`"
+definition = ["util", "exec", "--", "jj"]
+
+[aliases.tug]
+doc = "Advance a bookmark to the latest revision"
+definition = ["bookmark", "advance"]
+
+[aliases.mine]
+doc = "List bookmarks on revisions I authored"
+definition = ["bookmark", "list", "-r", "mine()"]
+
+[aliases.accuse]
+doc = "Annotate file lines with their originating commit"
+definition = ["file", "annotate"]
+
+[aliases.long]
+doc = "Show detailed log output"
+definition = ["log", "--template", "builtin_log_detailed"]
+
+[aliases.collapse]
+doc = "Squash all commits on the current branch into the branch start"
+definition = [
+  "squash",
+  "--from",
+  "branch_start(@)+::@",
+  "--to",
+  "branch_start(@)",
+]
+
+[aliases.iso]
+doc = "Create an isolated workspace via jj-iso"
+definition = ["util", "exec", "--", "jj-iso"]
+
+[aliases.pr]
+doc = "Open or manage pull requests via jj-vine"
+definition = ["util", "exec", "--", "jj-vine"]
+
+[aliases.prek]
+doc = "Run prek (pre-commit) on recent (reachable) changes"
+# recent discussion in discord:
+# https://discord.com/channels/968932220549103686/968932220549103689/1523207332094415019
+definition = [
+  "util",
+  "exec",
+  "--",
+  "jj",
+  "run",
+  "--jobs",
+  "4",      # arbitrarily chosen...
+  "--",
+  "bash",
+  "-c",
+  # `$JJ_COMMIT_ID` is set for us via `jj run`. `path` renders repo-root-relative
+  # paths, which is what prek expects.
+  '''
+  prek run --files $(jj diff -T 'path ++ "\n"' -r "$JJ_COMMIT_ID")
+  ''',
+]
+
+[aliases.plan]
+doc = "Add an empty change at tip with a given desc"
+definition = [
+  "new",
+  "--no-edit",
+  "--insert-after",
+  # the one
+  #   latest change
+  #       on trunk that has either content or a desc
+  '''
+  exactly(
+    heads(trunk():: & (~empty() | ~description(""))), 1
+  )
+''',
+  "-m",
+]
+
+[aliases.stage]
+doc = "Stage my non-empty changes after the active megamerge, or above trunk"
+definition = [
+  "util",
+  "exec",
+  "--",
+  "jj-stack",
+  "-r",
+  '''
+  coalesce(
+    heads(::@ & merges() & mutable() & (trunk()..) & description(regex:"^megamerge\n?$")),
+    trunk(),
+  )+:: & mine() & mutable() ~ empty()
+  ''',
+]
+
+[aliases.stack]
+doc = "Insert a revision as a new branch under the active megamerge"
+definition = ["util", "exec", "--", "jj-stack", "-r"]
+
+[aliases.land]
+doc = "Land a staged branch and advance the local trunk bookmark"
+definition = ["util", "exec", "--", "jj-land", "-r"]
+
+[aliases.restack]
+doc = "Rebase megamerge changes onto trunk"
+definition = [
+  "rebase",
+  "--onto",
+  "trunk()",
+  "--source",
+  "roots(trunk()..@) & mutable()",
+  "--simplify-parents",
+]

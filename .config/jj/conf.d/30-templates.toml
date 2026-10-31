@@ -1,0 +1,61 @@
+[templates]
+git_push_bookmark = '"connor15mcc/" ++ change_id.shortest(3)'
+draft_commit_description = '''
+concat(
+  coalesce(description, default_commit_description, "\n"),
+  "
+JJ: ignore-rest
+
+JJ: feat: introduces a new feature
+JJ: fix: fixes a bug
+JJ: refactor: code changes that neither fix a bug nor introduce a feature
+JJ: test: addition of missing tests or corrections to existing tests
+JJ: docs: changes in documentation only
+JJ: style: code changes that do not impact the functionality
+JJ: perf: code changes that improve performance
+JJ: chore: changes that do not modify the source code or test files
+JJ: build: changes affecting the build system or external dependencies
+JJ: ci: changes to continuous integration configuration files and scripts
+JJ: revert: reverts a previously made commit
+
+JJ: reference: JIRA-1234
+JJ: Co-authored-by: name <user@users.noreply.github.com>
+",
+  surround(
+    "\nJJ: This commit contains the following changes:\n", "\n",
+    indent("JJ:     ", diff.stat(72)),
+  ),
+  diff.git(),
+)
+'''
+log_node = '''
+  label("node",
+    coalesce(
+      if(!self, label("elided", "~")),
+      if(current_working_copy, label("working_copy", "@")),
+      if(conflict, label("conflict", "×")),
+      if(immutable, label("immutable", "*")),
+      label("normal", "·")
+    )
+  )
+'''
+file_annotate = '''
+separate(" ",
+  commit.change_id().shortest(8),
+  pad_end(8, truncate_end(8, commit.author().name())),
+  pad_end(11, format_timestamp(commit_timestamp(commit))),
+  pad_start(4, line_number),
+) ++ ": " ++ content
+'''
+
+[template-aliases]
+# Show unique prefix and the rest surrounded by brackets
+'format_short_id(id)' = 'id.shortest(12).prefix() ++ "[" ++ id.shortest(12).rest() ++ "]"'
+# Show username (rather than email)
+'format_short_signature(signature)' = 'signature.email().local()'
+default_commit_description = '''
+"
+
+"
+'''
+"format_timestamp(timestamp)" = "timestamp.ago()"
