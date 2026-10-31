@@ -226,6 +226,61 @@ log = '''
 'format_short_id(id)' = 'id.shortest(12).prefix() ++ "[" ++ id.shortest(12).rest() ++ "]"'
 # Show username (rather than email)
 'format_short_signature(signature)' = 'signature.email().local()'
+'format_short_commit_id(id)' = '''
+if(git_web_url(),
+  hyperlink(git_web_url() ++ "/commit/" ++ id, format_short_id(id)),
+  format_short_id(id)
+)
+'''
+'linkify_prs(text)' = '''
+replace(
+  regex:"\\(#(\\d+)\\)",
+  text,
+  |m| hyperlink(git_web_url() ++ "/pull/" ++ m.get(1), m.get(0)),
+)
+'''
+'format_short_commit_header(commit)' = '''
+separate(" ",
+  format_short_change_id_with_change_offset(commit),
+  format_short_signature(commit.author()),
+  format_timestamp(commit_timestamp(commit)),
+  commit.bookmarks().map(|b|
+    if(git_web_url(),
+      hyperlink(git_web_url() ++ "/pull/new/" ++ b.name(), b),
+      b
+    )
+  ).join(" "),
+  commit.tags(),
+  commit.working_copies(),
+  format_short_commit_id(commit.commit_id()),
+  format_commit_labels(commit),
+  if(config("ui.show-cryptographic-signatures").as_boolean(),
+    format_short_cryptographic_signature(commit.signature())
+  ),
+)
+'''
+'builtin_log_compact(commit)' = '''
+if(commit.root(),
+  format_root_commit(commit),
+  label(
+    separate(" ",
+      if(commit.current_working_copy(), "working_copy"),
+      if(commit.immutable(), "immutable", "mutable"),
+      if(commit.conflict(), "conflicted"),
+    ),
+    concat(
+      format_short_commit_header(commit) ++ "\n",
+      separate(" ",
+        if(commit.empty(), empty_commit_marker),
+        if(commit.description(),
+          linkify_prs(commit.description().first_line()),
+          label(if(commit.empty(), "empty"), description_placeholder),
+        ),
+      ) ++ "\n",
+    ),
+  )
+)
+'''
 default_commit_description = '''
 "
 
