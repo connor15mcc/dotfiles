@@ -133,6 +133,7 @@ keybinds clear-defaults=true {
         bind "n" { GoToNextTab; SwitchToMode "normal"; }
         bind "p" { GoToPreviousTab; SwitchToMode "normal"; }
         bind "z" { ToggleFocusFullscreen; SwitchToMode "normal"; }
+        bind "space" { NextSwapLayout; SwitchToMode "normal"; }
 
         bind "Ctrl p" { SwitchToMode "Pane"; }
         bind "Ctrl n" { SwitchToMode "Resize"; }
@@ -330,8 +331,9 @@ copy_on_select false
 //   - true (default)
 //   - false
 // 
-// session_serialization false
- 
+session_serialization true
+serialize_pane_viewport true
+
 // Whether pane viewports are serialized along with the session, default is false
 // Options:
 //   - true
