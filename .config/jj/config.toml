@@ -175,6 +175,7 @@ definition = [
 
 [revsets]
 bookmark-advance-to = 'closest_pushable(@)'
+short-prefixes = "(trunk()..@ | trunk()..active_megamerge(@))::"
 # show only up-to-date changes.
 # this facilitates dropping work from actively tracked (megamerge),
 # while balancing log noise and avoiding the desire to abandon entirely
