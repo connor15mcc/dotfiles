@@ -109,3 +109,7 @@ definition = [
   "roots(trunk()..@) & mutable()",
   "--simplify-parents",
 ]
+
+[aliases.refresh]
+doc = "Fetch from remotes and restack onto trunk"
+definition = ["util", "exec", "--", "bash", "-c", "jj git fetch && jj restack"]
