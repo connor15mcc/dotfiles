@@ -113,3 +113,23 @@ definition = [
 [aliases.refresh]
 doc = "Fetch from remotes and restack onto trunk"
 definition = ["util", "exec", "--", "bash", "-c", "jj git fetch && jj restack"]
+
+[aliases.who]
+doc = "Count changes per author and co-author"
+definition = [
+  "util",
+  "exec",
+  "--",
+  "bash",
+  "-c",
+  '''
+  jj log --no-graph -r "${1:-::@}" -T '
+    author.name() ++ "\n" ++
+    trailers
+      .filter(|t| t.key().lower() == "co-authored-by")
+      .map(|t| t.value().replace(regex:" *<.*>", "") ++ "\n")
+      .join("")
+  ' | grep -v '^$' | sort | uniq -c | sort -rn
+  ''',
+  "jj-who",
+]
