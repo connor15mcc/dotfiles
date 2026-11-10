@@ -1,4 +1,5 @@
 [templates]
+log = 'log_narrow(self)'
 git_push_bookmark = '"connor15mcc/" ++ change_id.shortest(3)'
 draft_commit_description = '''
 concat(

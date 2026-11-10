@@ -1,8 +1,11 @@
 [template-aliases]
+'format_short_id_unbracketed(id)' = '''
+id.shortest(7).prefix() ++ id.shortest(7).rest()
+'''
 'format_short_commit_id(id)' = '''
 if(git_web_url(),
-  hyperlink(git_web_url() ++ "/commit/" ++ id, format_short_id(id)),
-  format_short_id(id)
+  hyperlink(git_web_url() ++ "/commit/" ++ id, format_short_id_unbracketed(id)),
+  format_short_id_unbracketed(id)
 )
 '''
 'linkify_prs(text)' = '''
@@ -12,10 +15,10 @@ replace(
   |m| hyperlink(git_web_url() ++ "/pull/" ++ m.get(1), m.get(0)),
 )
 '''
-'format_short_commit_header(commit)' = '''
+'log_narrow_header(commit)' = '''
 separate(" ",
-  format_short_change_id_with_change_offset(commit),
-  format_short_signature(commit.author()),
+  concat(commit.change_id().shortest(), if(commit.divergent(), "/" ++ commit.change_offset())),
+  if(!commit.mine() || commit.immutable(), format_short_signature(commit.author())),
   format_timestamp(commit_timestamp(commit)),
   commit.bookmarks().map(|b|
     if(git_web_url(),
@@ -32,7 +35,7 @@ separate(" ",
   ),
 )
 '''
-'builtin_log_compact(commit)' = '''
+'log_narrow(commit)' = '''
 if(commit.root(),
   format_root_commit(commit),
   label(
@@ -42,7 +45,7 @@ if(commit.root(),
       if(commit.conflict(), "conflicted"),
     ),
     concat(
-      format_short_commit_header(commit) ++ "\n",
+      log_narrow_header(commit) ++ "\n",
       separate(" ",
         if(commit.empty(), empty_commit_marker),
         if(commit.description(),
