@@ -35,10 +35,10 @@ zoxide = "latest"
 "aqua:tailscale/tailscale" = "latest"
 "aqua:fish-shell/fish-shell" = "latest"
 "cargo:https://github.com/connor15mcc/jj-vine" = "latest"
-tools = { version = "latest", postinstall = "tools install" }
+tools = { version = "latest", postinstall = '$MISE_TOOL_INSTALL_PATH/tools install' }
 
 [tool_alias]
-tools = "cargo:https://github.com/connor15mcc/tools"
+tools = "github:connor15mcc/tools"
 asciinema = "github:asciinema/asciinema"
 
 [env]
