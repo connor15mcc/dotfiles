@@ -34,7 +34,7 @@ zellij = "0.45.0"
 zoxide = "latest"
 "aqua:tailscale/tailscale" = "latest"
 "aqua:fish-shell/fish-shell" = "latest"
-"cargo:jj-vine" = "latest"
+"cargo:https://github.com/connor15mcc/jj-vine" = "latest"
 tools = { version = "latest", postinstall = "tools install" }
 
 [tool_alias]
