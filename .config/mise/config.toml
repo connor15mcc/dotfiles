@@ -40,6 +40,7 @@ tools = { version = "latest", postinstall = '$MISE_TOOL_INSTALL_PATH/tools insta
 [tool_alias]
 tools = "github:connor15mcc/tools"
 asciinema = "github:asciinema/asciinema"
+jj-vine = "cargo:https://github.com/connor15mcc/jj-vine"
 
 [env]
 EDITOR = "nvim"
