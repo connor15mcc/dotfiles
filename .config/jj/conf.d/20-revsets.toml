@@ -1,6 +1,7 @@
 [revsets]
 bookmark-advance-to = 'closest_pushable(@)'
 short-prefixes = "(trunk()..@ | trunk()..active_megamerge(@))::"
+log-graph-prioritze = "coalesce(megamerge(), trunk())"
 
 [revset-aliases]
 '/' = 'trunk()'
