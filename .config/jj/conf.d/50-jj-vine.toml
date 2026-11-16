@@ -3,3 +3,4 @@ description.sync = true
 
 [jj-vine.github]
 host = "https://api.github.com"
+tokenCommand = ["gh", "auth", "token"]
