@@ -37,15 +37,6 @@ ACTION:
 
 SKIP: The user explicitly names the command or the target change.
 
-## Gate: Write or change code
-
-TRIGGER: You add code, or you change the behavior of code.
-
-ACTION: Use a TDD flow. Write the failing test first. Run the test. Then write
-the code.
-
-SKIP: Documentation, configuration, and refactors that keep the same behavior.
-
 ## Gate: Type a comment in a source file
 
 TRIGGER: You are about to type a comment character in a source file.
